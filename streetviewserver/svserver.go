@@ -59,8 +59,16 @@ func modifyInformation(target string, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body = filterStrings(body)
+	if strings.Contains(target, "photometa") {
+		body = filterStreetStrings(body)
+	}
+	// body = filterURL(body)
 
+	for key, headers := range r.Header {
+		for _, value := range headers {
+			w.Header().Add(key, value)
+		}
+	}
 	w.Write(body)
 }
 
@@ -76,9 +84,10 @@ func ServeMaps(w http.ResponseWriter, r *http.Request) {
 	fullURL.Host = "www.google.com"
 	fullURL.Scheme = "https"
 
-	if strings.Contains(fullURL.String(), "photometa") {
-		modifyInformation(fullURL.String(), w, r)
-	} else {
-		http.Redirect(w, r, fullURL.String(), http.StatusFound)
-	}
+	modifyInformation(fullURL.String(), w, r)
+	// if strings.Contains(fullURL.String(), "photometa") {
+	// 	modifyInformation(fullURL.String(), w, r)
+	// } else {
+	// 	http.Redirect(w, r, fullURL.String(), http.StatusFound)
+	// }
 }

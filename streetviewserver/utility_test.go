@@ -2,7 +2,7 @@ package streetviewserver
 
 import "testing"
 
-func TestFilterStrings(t *testing.T) {
+func TestFilterStreetStrings(t *testing.T) {
 	inputs := []string{
 		"This is a test, and replaced should be this: [[\"Jl. SMA Aek Kota Batu\",\"id\"],[\"Sumatera Utara\",\"de\"]], yes that is what should be replaced.",
 		"[[\"а/д Вятка\",\"ru\"]]",
@@ -13,9 +13,12 @@ func TestFilterStrings(t *testing.T) {
 	}
 
 	for i := range inputs {
-		out := string(filterStrings([]byte(inputs[i])))
+		out := string(filterStreetStrings([]byte(inputs[i])))
 		if out != outputs[i] {
 			t.Fatal("Expected\n", outputs[i], "\nbut got\n", out)
 		}
 	}
+}
+
+func TestGoogleStrings(t *testing.T) {
 }
