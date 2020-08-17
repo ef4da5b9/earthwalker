@@ -13,3 +13,5 @@ start.sh
 config.toml
 
 public/build/*
+
+node_modules/*

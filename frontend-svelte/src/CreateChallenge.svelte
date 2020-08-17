@@ -1,7 +1,12 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
+
+    import {} from 'googlemaps';
+
     import { loc, ewapi, globalMap, globalResult } from './stores.js';
     import MapInfo from './components/MapInfo.svelte';
+    import { getURLParam, showChallengeLinkPrompt } from './scripts/page_state';
+    import { loadGeoTIF, fetchPanos } from './scripts/get_places';
 
     // TODO: FIXME: clean up/use async properly
     // TODO: improve page design, looks rather cluttered right now

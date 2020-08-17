@@ -1,3 +1,6 @@
+import * as turf from '@turf/turf';
+import * as GeoTIFF from 'geotiff';
+
 // TODO: Better organization of this file + additional documentation
 //       The flow is pretty confusing right now.
 // In the meantime, here's what happens in this script:
@@ -90,7 +93,7 @@ async function fetchPano(svService, settings, popTIF, incrNumReqsCallback) {
         }
     }
     
-    function handlePanoResponse(result, status, foundLatLng) {
+    function handlePanoResponse(result, status) {
         if (status == google.maps.StreetViewStatus.OK && resultPanoIsGood(result, settings)) {
             return result.location.latLng;
         }
@@ -172,3 +175,5 @@ function getRandomLngLat() {
     let randomLat = (Math.random() * 180 - 90);
     return [randomLng, randomLat];
 }
+
+export { loadGeoTIF, getLocationPopulation, fetchPanos };

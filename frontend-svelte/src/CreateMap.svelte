@@ -1,7 +1,11 @@
-<script>
+<script lang="ts">
     // TODO: svelteify this file
     import { onMount } from 'svelte';
+
     import Tags from 'svelte-tags-input';
+    import * as L from 'leaflet';
+    import * as turf from '@turf/turf';
+    
     import { loc, ewapi, globalMap } from './stores.js';
 
     const NOMINATIM_URL = (locStringEncoded) => `https://nominatim.openstreetmap.org/search?q=${locStringEncoded}&polygon_geojson=1&limit=5&polygon_threshold=0.005&format=json`;
@@ -73,14 +77,6 @@
                     alert("Failed to submit map?!");
                 }
             });
-    }
-
-    function handleLocStringUpdate() {
-        if (locString != oldLocString) {
-            submitDisabled = true;
-            oldLocString = locString;
-            updatePolygonFromLocString();
-        }
     }
 
     function showPolygonOnMap() {
@@ -279,7 +275,7 @@
                                    bidirectional, so make sure your mapSettings
                                    defaults match the select defaults. -->
                         <select class="form-control" id="Connectedness" bind:value={mapSettings.Connectedness}>
-                            <option value={1} selected="selected">always</option>
+                            <option value={1} selected={true}>always</option>
                             <option value={2} >never</option>
                             <option value={0} >any</option>
                         </select>
@@ -297,7 +293,7 @@
                             <div class="input-group-text">Copyright</div>
                         </div>
                         <select class="form-control" id="Copyright" bind:value={mapSettings.Copyright}>
-                            <option value={0} selected="selected">any</option>
+                            <option value={0} selected={true}>any</option>
                             <option value={1}>Google only</option>
                             <option value={2}>third party only</option>
                         </select>
@@ -315,7 +311,7 @@
                             <div class="input-group-text">Source</div>
                         </div>
                         <select class="form-control" id="Source" bind:value={mapSettings.Source}>
-                            <option value={1} selected="selected">outdoors only</option>
+                            <option value={1} selected={true}>outdoors only</option>
                             <option value={0}>any</option>
                         </select>
                     </div>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -12,6 +12,9 @@
 	import Summary from './Summary.svelte'
 	// TODO: code split this out into a separate bundle
 	import Modify from './Modify.svelte'
+
+	import { getChallengeID, getChallengeResultID } from './scripts/page_state';
+	import { EarthwalkerAPI } from './scripts/api';
 
 	$ewapi = new EarthwalkerAPI();
 
