@@ -88,7 +88,11 @@ function svgIcon(text, hue) {
 
 function showPolygonOnMap(layer, polygon) {
     layer.clearLayers();
-    return L.geoJSON(polygon).addTo(layer);
+    return L.geoJSON(polygon, {
+        style: {
+            fillOpacity: 0,
+        },
+    }).addTo(layer);
 }
 
 

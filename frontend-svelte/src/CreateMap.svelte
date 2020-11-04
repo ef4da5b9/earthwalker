@@ -86,7 +86,11 @@
     function showPolygonOnMap() {
         previewPolyGroup.clearLayers();
         if (mapSettings.Polygon) {
-            let map_poly = L.geoJSON(mapSettings.Polygon).addTo(previewPolyGroup);
+            let map_poly = L.geoJSON(mapSettings.Polygon, {
+                style: {
+                    fillOpacity: 0,
+                },
+            }).addTo(previewPolyGroup);
             previewMap.fitBounds(map_poly.getBounds());
         }
     }
