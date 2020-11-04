@@ -28,7 +28,7 @@ func Read() (domain.Config, error) {
 	// TOML
 	tomlData, err := ioutil.ReadFile(conf.ConfigPath)
 	if err != nil {
-		log.Printf("Error reading/no config file at '%s', using defaults.\n", conf.ConfigPath)
+		log.Printf("No config file at '%s', using default configuration.\n", conf.ConfigPath)
 	}
 	if err := toml.Unmarshal(tomlData, &conf); err != nil {
 		return conf, fmt.Errorf("error parsing TOML config file: %v", err)
