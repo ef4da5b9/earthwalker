@@ -8,6 +8,9 @@
     import Leaderboard from './components/Leaderboard.svelte';
 
     let displayedResult;
+    // name of the current player
+    let currentPlayer;
+    // name of the player selected in the leaderboard
     let focusedPlayer;
     let allResults = [];
     let scoresTableData = new Object();
@@ -30,7 +33,8 @@
             r.totalDist = r.scoreDists.reduce((acc, val) => acc + val[1], 0)
         });
         displayedResult = allResults.find(r => r.ChallengeResultID === $globalResult.ChallengeResultID);
-        focusedPlayer = displayedResult.Nickname;
+        currentPlayer = displayedResult.Nickname;
+        focusedPlayer = currentPlayer;
         allResults.sort((a, b) => b.totalScore - a.totalScore);
         allResults = allResults;
 
@@ -45,6 +49,22 @@
         // transpose matrix
         scoresTableData.ScoresPerRound = scoresTableData.ScoresPerPlayer[0].map((_, colIndex) =>
             scoresTableData.ScoresPerPlayer.map(row => row[colIndex]));
+    }
+
+    function isShowAllPlayersInScoresPerRound(allPlayers) {
+        return allPlayers.length <= 3;
+    }
+
+    function isShowPlayerInScoresPerRoundTable(player, currentPlayer, focusedPlayer, allPlayers) {
+        if (isShowAllPlayersInScoresPerRound(allPlayers)) {
+            return true;
+        }
+        // only show the current player and optionally another selected player
+        return (player === currentPlayer) || (player === focusedPlayer);
+    }
+
+    function isHighlightPlayerInScoresPerRoundTable(player, focusedPlayer) {
+        return player === focusedPlayer;
     }
 </script>
 
@@ -78,8 +98,10 @@
                     <thead>
                     <th scope="col">Round</th>
                     {#each scoresTableData.Nicknames as playerName}
-                        <th scope="col" class={focusedPlayer === playerName ? 'highlight' : ''}>{playerName + "\'s"} Points</th>
-                        <th scope="col" class={focusedPlayer === playerName ? 'highlight' : ''}>{playerName + "\'s"} Distance Off</th>
+                        {#if isShowPlayerInScoresPerRoundTable(playerName, currentPlayer, focusedPlayer, scoresTableData.Nicknames)}
+                            <th scope="col" class={isHighlightPlayerInScoresPerRoundTable(playerName, focusedPlayer) ? 'highlight' : ''}>{playerName + "\'s"} Points</th>
+                            <th scope="col" class={isHighlightPlayerInScoresPerRoundTable(playerName, focusedPlayer) ? 'highlight' : ''}>{playerName + "\'s"} Distance Off</th>
+                        {/if}
                     {/each}
                     </thead>
                     <tbody>
@@ -88,8 +110,10 @@
                             <tr scope="row">
                                 <td>{roundIndex + 1}</td>
                                 {#each scoresOfRound as scoreDistOfRoundAndPlayer, playerIndex}
-                                    <td class={focusedPlayer === scoresTableData.Nicknames[playerIndex] ? 'highlight' : ''}>{scoreDistOfRoundAndPlayer[0]}</td>
-                                    <td class={focusedPlayer === scoresTableData.Nicknames[playerIndex] ? 'highlight' : ''}>{distString(scoreDistOfRoundAndPlayer[1])}</td>
+                                    {#if isShowPlayerInScoresPerRoundTable(scoresTableData.Nicknames[playerIndex], currentPlayer, focusedPlayer, scoresTableData.Nicknames)}
+                                        <td class={isHighlightPlayerInScoresPerRoundTable(scoresTableData.Nicknames[playerIndex], focusedPlayer) ? 'highlight' : ''}>{scoreDistOfRoundAndPlayer[0]}</td>
+                                        <td class={isHighlightPlayerInScoresPerRoundTable(scoresTableData.Nicknames[playerIndex], focusedPlayer) ? 'highlight' : ''}>{distString(scoreDistOfRoundAndPlayer[1])}</td>
+                                    {/if}
                                 {/each}
                             </tr>
                         {/each}
