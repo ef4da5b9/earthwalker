@@ -123,6 +123,8 @@ You can rename or copy the provided sample configuration file, `config.toml.samp
 
 </details>
 
+Note: For tileservers, using `{s}` is also supported. For instance, `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
+
 ### Updating
 
 You can update earthwalker by running `git pull` in its directory, and then running `make` or following the compilation instructions again.
