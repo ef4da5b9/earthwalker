@@ -41,9 +41,9 @@ async function loadGeoTIF(loc) {
 
 // get normalized (0.0 - 1.0) population density at lat, lng
 async function getLocationPopulation(popTIF, lat, lng) {
-    const delta = 0.1;
+    const delta = 0.01;
     let value = await popTIF.readRasters({
-        bbox: [lng, lat, lng + 10 * delta, lat + 10 * delta],
+        bbox: [lng, lat, lng + 10*delta, lat + 10*delta],
         resX: delta,
         resY: delta,
     });

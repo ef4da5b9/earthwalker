@@ -368,6 +368,6 @@
         <button id="submit-button" type="submit" class="btn btn-primary" style="margin-bottom: 2em;" disabled={submitDisabled}>Create Map</button>
 
     </form>
-    <link rel="stylesheet" href="static/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="public/leaflet/leaflet.css"/>
     </div>
 </main>
