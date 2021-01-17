@@ -113,7 +113,7 @@ You can rename or copy the provided sample configuration file, `config.toml.samp
 |                   | EARTHWALKER_CONFIG_PATH                           |                      | ./config.toml                                            | Location of the `.toml` configuration file |
 | port              | EARTHWALKER_PORT                                  | Port                 | 8080                                                     |          |
 |                   | EARTHWALKER_DB_PATH                               | DBPath               | ./badger                                                 | Location of the database directory |
-|                   | EARTHWALKER_STATIC_PATH                           | StaticPath           | location of executable (usually `earthwalker`)           | Absolute path to the directory containing `static` and `templates` |
+|                   | EARTHWALKER_STATIC_PATH                           | StaticPath           | location of executable (usually `earthwalker`)           | Absolute path to the directory containing `public` |
 |                   |                                                   | TileServerURL        | https://tiles.wmflabs.org/osm/{z}/{x}/{y}.png            | URL of a raster tile server.  This determines what you see on the map. |
 |                   |                                                   | NoLabelTileServerURL | https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png  | As above, but this value is used when a map creator has turned labels off. |
 

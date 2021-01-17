@@ -104,10 +104,11 @@ func main() {
 	http.Handle("/play/", handlers.Play{
 		ChallengeStore:       challengeStore,
 		ChallengeResultStore: challengeResultStore,
+		Config:               conf,
 	})
 	http.HandleFunc("/maps/", handlers.ServeMaps)
 	// Otherwise, just serve index.html and let the frontend deal with the consequences
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "public/index.html") })
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, conf.StaticPath+"/public/index.html") })
 
 	// == ENGAGE ========
 	log.Println("earthwalker is running on ", port)
