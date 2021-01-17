@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { loc, ewapi, globalMap, globalResult } from './stores.js';
     import MapInfo from './components/MapInfo.svelte';
+    import utils from './utils';
 
     // TODO: FIXME: clean up/use async properly
     // TODO: improve page design, looks rather cluttered right now
@@ -27,6 +28,7 @@
     let submitButton;
     // bindings
     let nickname = "";
+    let gameLink = "";
 
     onMount(async () => {
         statusText = "Getting Map settings...";
@@ -62,6 +64,7 @@
 
         statusText = "Sending Challenge to server..."
         challengeID = await submitNewChallenge();
+        gameLink = utils.getGameLink(challengeID);
 
         statusText = "Done!";
         done = true;
@@ -138,13 +141,19 @@
                     <input required type="text" class="form-control" id="Nickname" bind:value={nickname}/>
                 </div>
             </div>
-            <div>
-                <button bind:this={submitButton} id="submit-button" class="btn btn-primary" style="color: #fff;" disabled={!done || !nickname}>Start Challenge</button>
-                {#if {done}}
-                    <button type="button" id="copy-game-link" class="btn btn-primary" on:click={(e) => {showChallengeLinkPrompt(challengeID);}}>
-                        Copy link to this game
-                    </button>
-                {/if}
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button bind:this={submitButton} id="submit-button" class="btn btn-primary" style="color: #fff;" disabled={!done || !nickname}>Start Challenge</button>
+                    </div>
+                    {#if {done}}
+                    <input type="text" class="form-control" readonly="readonly" bind:value={gameLink} disabled={!gameLink} />
+                    <div class="input-group-append">
+                        <button type="button" id="copy-game-link" class="btn btn-primary" on:click={(e) => {utils.copyToClipboard(gameLink)}} disabled={!gameLink}>
+                        &#128203;
+                        </button>
+                    </div>
+                    {/if}
             </div>
         </div>
     </form>
