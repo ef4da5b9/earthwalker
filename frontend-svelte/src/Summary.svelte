@@ -6,6 +6,7 @@
     import { loc, ewapi, globalMap, globalChallenge, globalResult } from './stores.js';
     import LeafletGuessesMap from './components/LeafletGuessesMap.svelte';
     import Leaderboard from './components/Leaderboard.svelte';
+    import utils from './utils';
 
     let displayedResult;
     // name of the current player
@@ -18,6 +19,8 @@
     let guessLocs;
     let actualLocs;
     let scoreDists = [];
+
+    let gameLink = utils.getGameLink($globalChallenge.ChallengeID);
 
     // leaflet
     let scoreMap;
@@ -84,11 +87,14 @@
 
         <div class="container">
             <br>
-            <div class="row">
-                <div class="col text-center">
-                    <button type="button" id="copy-game-link" class="btn btn-primary" on:click={() => showChallengeLinkPrompt($globalChallenge.ChallengeID)}>
-                        Copy link to this game
-                    </button>
+            <div class="row justify-content-center">
+                <div class="input-group w-50">
+                    <input type="text" class="form-control" readonly="readonly" bind:value={gameLink} disabled={!gameLink} />
+                    <div class="input-group-append">
+                        <button type="button" id="copy-game-link" class="btn btn-primary" on:click={() => utils.copyToClipboard(gameLink)} disabled={!gameLink}>
+                            &#128203;
+                        </button>
+                    </div>
                 </div>
             </div>
 
