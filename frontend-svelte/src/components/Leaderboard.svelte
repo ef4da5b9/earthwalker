@@ -1,5 +1,5 @@
 <script>
-    export let focusedPlayer = null;
+    export let displayedResult = null;
     export let allResults;
     export let curRound;
 
@@ -28,8 +28,8 @@
             {#if curResult.Guesses.length > curRound}
                 <tr 
                     scope="row" 
-                    class={focusedPlayer ? focusedPlayer === curResult.Nickname ? "clickable highlight" : "clickable" : ""} 
-                    on:click={() => {focusedPlayer = curResult.Nickname;}}
+                    class={displayedResult ? displayedResult.ChallengeResultID === curResult.ChallengeResultID ? "clickable highlight" : "clickable" : ""} 
+                    on:click={() => {displayedResult = allResults[i];}}
                 >
                     <td><img style="height: 20px;" src={svgIcon("?", curResult && curResult.Icon ? curResult.Icon : 0)}/></td>
                     <td>{curResult.Nickname}</td>
