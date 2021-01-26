@@ -34,25 +34,17 @@ const MAX_LATLNG_ATTEMPTS = 1000000;
 //       This TIF is 6.5mb.
 //       At minimum, cache it.
 async function loadGeoTIF(loc) {
-    const response = await fetch("/public/nasa_pop_data.tif");
+    const response = await fetch(loc);
     const arrayBuffer = await response.arrayBuffer();
     return await GeoTIFF.fromArrayBuffer(arrayBuffer);
 }
 
 // get normalized (0.0 - 1.0) population density at lat, lng
-async function getLocationPopulation(popTIF, lat, lng) {
-    const delta = 0.01;
-    let value = await popTIF.readRasters({
-        bbox: [lng, lat, lng + 10*delta, lat + 10*delta],
-        resX: delta,
-        resY: delta,
-    });
-    let actualValue = value[0][0];
-    // 255 means ocean
-    if (actualValue == 255) {
-        actualValue = 0;
-    }
-    return actualValue / 255;
+async function getLocationPopulation(popData, lat, lng) {
+    let row = Math.round(popData.height * ((lat - 90) / -180.0));
+    let column = Math.round(popData.width * ((lng + 180) / 360.0));
+    let value = popData[0][row * popData.width + column];
+    return value / 255;
 }
 
 // == GET PANOS ========
@@ -149,8 +141,10 @@ async function getRandomConstrainedLatLng(polygon, popTIF, minDensity, maxDensit
         }
     }
 
+    const popData = await popTIF.readRasters();
+
     async function popDensityInLimits(lnglat) {
-        let density = (await getLocationPopulation(popTIF, lnglat[1], lnglat[0])) * 100;
+        let density = (await getLocationPopulation(popData, lnglat[1], lnglat[0])) * 100;
         return density <= maxDensity && density >= minDensity;
     }
     

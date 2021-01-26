@@ -14,7 +14,7 @@
 
     let streetViewService = new google.maps.StreetViewService();
 
-    const popTIFLoc = "/public/nasa_pop_data.tif";
+    const popTIFLoc = "/public/ghsl_pop5.tif";
     let popTIF = undefined;
 
     let challengeID;
