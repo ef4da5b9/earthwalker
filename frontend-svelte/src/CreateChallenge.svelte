@@ -42,13 +42,13 @@
         }
 
         statusText = "Looking up population density data...";
-        popTIF = await loadGeoTIF(popTIFLoc);
+        const popData = await loadGeoTIF(popTIFLoc);
 
         statusText = "Fetching panoramas...";
         foundCoords = await fetchPanos(
             streetViewService, 
             $globalMap, 
-            popTIF, 
+            popData, 
             (panoWasFound) => {
                 if (panoWasFound) {
                     numFound++;

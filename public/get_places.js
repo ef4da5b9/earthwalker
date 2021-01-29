@@ -36,7 +36,10 @@ const MAX_LATLNG_ATTEMPTS = 1000000;
 async function loadGeoTIF(loc) {
     const response = await fetch(loc);
     const arrayBuffer = await response.arrayBuffer();
-    return await GeoTIFF.fromArrayBuffer(arrayBuffer);
+    const geoTIF = await GeoTIFF.fromArrayBuffer(arrayBuffer);
+    const pool = new GeoTIFF.Pool();
+    const popData = await geoTIF.readRasters({pool});
+    return popData
 }
 
 // get normalized (0.0 - 1.0) population density at lat, lng
@@ -48,21 +51,21 @@ async function getLocationPopulation(popData, lat, lng) {
 }
 
 // == GET PANOS ========
-async function fetchPanos(svService, settings, popTIF, incrNumReqsCallback = () => {}) {
+async function fetchPanos(svService, settings, popData, incrNumReqsCallback = () => {}) {
     const promises = [];
     for (let i = 0; i < settings.NumRounds; i++) {
-        promises.push(fetchPano(svService, settings, popTIF, incrNumReqsCallback));
+        promises.push(fetchPano(svService, settings, popData, incrNumReqsCallback));
     }
     let foundLatLngs = await Promise.all(promises);
     return foundLatLngs;
 }
 
-async function fetchPano(svService, settings, popTIF, incrNumReqsCallback) {
+async function fetchPano(svService, settings, popData, incrNumReqsCallback) {
     let source = settings.Source == 1 ? google.maps.StreetViewSource.OUTDOOR : google.maps.StreetViewSource.DEFAULT;
     let randomLatLng;
     let foundLatLng = null;
     for (let iters = 0; iters < MAX_REQS; iters++) {
-        randomLatLng = await getRandomConstrainedLatLng(settings.Polygon, popTIF, settings.MinDensity, settings.MaxDensity);
+        randomLatLng = await getRandomConstrainedLatLng(settings.Polygon, popData, settings.MinDensity, settings.MaxDensity);
         if (!randomLatLng) {
             // couldn't find a good latlng (one meeting pop density and polygon requirements)
             console.log("Maximum number of latlng generation attempts exceeded.");
@@ -122,7 +125,7 @@ function resultPanoIsGood(result, settings) {
 
 // get a random google.maps.LatLng within the specified polygon and with
 // a population density in the specified range
-async function getRandomConstrainedLatLng(polygon, popTIF, minDensity, maxDensity) {
+async function getRandomConstrainedLatLng(polygon, popData, minDensity, maxDensity) {
     // TODO: function assignment as control flow is heinous
     let getRandomLngLatInBounds;
     let pointInPolygon;
@@ -141,8 +144,6 @@ async function getRandomConstrainedLatLng(polygon, popTIF, minDensity, maxDensit
         }
     }
 
-    const popData = await popTIF.readRasters();
-
     async function popDensityInLimits(lnglat) {
         let density = (await getLocationPopulation(popData, lnglat[1], lnglat[0])) * 100;
         return density <= maxDensity && density >= minDensity;
@@ -156,7 +157,7 @@ async function getRandomConstrainedLatLng(polygon, popTIF, minDensity, maxDensit
             return null;
         }
         attempts++;
-    } while (!pointInPolygon(lnglat) || !(await popDensityInLimits(lnglat)));
+    } while (!(await popDensityInLimits(lnglat)) || !pointInPolygon(lnglat));
     return new google.maps.LatLng(lnglat[1], lnglat[0]);
 }
 
